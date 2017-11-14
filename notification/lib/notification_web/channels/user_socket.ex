@@ -3,6 +3,7 @@ defmodule NotificationWeb.UserSocket do
 
   ## Channels
   # channel "room:*", NotificationWeb.RoomChannel
+  channel "notification_room:*", NotificationWeb.NotificationRoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

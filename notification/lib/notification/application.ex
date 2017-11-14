@@ -9,7 +9,7 @@ defmodule Notification.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(Notification.Repo, []),
+      # supervisor(Notification.Repo, []),
       # Start the endpoint when the application starts
       supervisor(NotificationWeb.Endpoint, []),
       # Start your own worker by calling: Notification.Worker.start_link(arg1, arg2, arg3)
