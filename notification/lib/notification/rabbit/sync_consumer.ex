@@ -1,4 +1,4 @@
-defmodule Notification.MessageConsumer do
+defmodule Notification.SyncConsumer do
     use GenServer
     use AMQP
 
@@ -7,8 +7,8 @@ defmodule Notification.MessageConsumer do
         GenServer.start_link(__MODULE__, [], [])
     end
 
-    @exchange    "message_consumer_exchange"
-    @queue       "message_consumer_queue"
+    @exchange    "sync_consumer_exchange"
+    @queue       "sync_consumer_queue"
     @queue_error "#{@queue}_error"
 
     def init(_opts) do
@@ -25,7 +25,7 @@ defmodule Notification.MessageConsumer do
 					Basic.qos(chan, prefetch_count: 10)
 					Queue.declare(chan, @queue_error, durable: true)
 					Queue.declare(chan, @queue, durable: true,
-																			arguments: [{"x-dead-letter-exchange", :longstr, ""},
+												arguments: [{"x-dead-letter-exchange", :longstr, ""},
 																									{"x-dead-letter-routing-key", :longstr, @queue_error}])
 					Exchange.fanout(chan, @exchange, durable: true)
 					Queue.bind(chan, @queue, @exchange)
@@ -67,7 +67,7 @@ defmodule Notification.MessageConsumer do
     {:ok, data} = Poison.decode(payload)
     {"user_id" => user_id} = data
     room_id = Kernel.inspect(user_id)    
-    NotificationWeb.Endpoint.broadcast("notification_room:"<>room_id, "notification:msg", data)
+    NotificationWeb.Endpoint.broadcast("notification_room:"<>room_id, "notification:sync", data)
     Basic.ack channel, tag
     IO.inspect payload
     
