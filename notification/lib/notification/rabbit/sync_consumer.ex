@@ -16,6 +16,7 @@ defmodule Notification.SyncConsumer do
     end
 
     defp rabbitmq_connect do
+      IO.puts "Connecting ***"
 			case Connection.open(Application.fetch_env!(:rabbitmq_config, :host)) do
                 {:ok, conn} ->
                     IO.puts "sync connected"
@@ -34,7 +35,8 @@ defmodule Notification.SyncConsumer do
 					{:ok, _consumer_tag} = Basic.consume(chan, @queue)
 					{:ok, chan}
 				{:error, _} ->
-					# Reconnection loop
+          # Reconnection loop
+         
 					:timer.sleep(10000)
 					rabbitmq_connect
 			end
