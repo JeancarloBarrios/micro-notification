@@ -12,7 +12,8 @@ defmodule Notification.SyncConsumer do
     @queue_error "#{@queue}_error"
 
     def init(_opts) do
-      rabbitmq_connect
+      IO.puts "its inniting"
+      rabbitmq_connect()
     end
 
     defp rabbitmq_connect do
