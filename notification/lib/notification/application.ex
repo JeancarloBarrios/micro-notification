@@ -12,6 +12,8 @@ defmodule Notification.Application do
       # supervisor(Notification.Repo, []),
       # Start the endpoint when the application starts
       supervisor(NotificationWeb.Endpoint, []),
+      worker(Notification.MessageConsumer, []),
+      worker(Notification.SyncConsumer, []),
       # Start your own worker by calling: Notification.Worker.start_link(arg1, arg2, arg3)
       # worker(Notification.Worker, [arg1, arg2, arg3]),
     ]

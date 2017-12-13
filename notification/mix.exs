@@ -40,7 +40,8 @@ defmodule Notification.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:amqp, "~> 0.2.3"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:distillery, "~> 1.0"}
     ]
   end
 

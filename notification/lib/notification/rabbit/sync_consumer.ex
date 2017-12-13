@@ -17,7 +17,9 @@ defmodule Notification.SyncConsumer do
 
     defp rabbitmq_connect do
 			case Connection.open(Application.fetch_env!(:rabbitmq_config, :host)) do
-				{:ok, conn} ->
+                {:ok, conn} ->
+                    IO.puts "sync connected"
+                    
 					# Get notifications when the connection goes down
 					Process.monitor(conn.pid)
 					# Everything else remains the same
@@ -26,7 +28,7 @@ defmodule Notification.SyncConsumer do
 					Queue.declare(chan, @queue_error, durable: true)
 					Queue.declare(chan, @queue, durable: true,
 												arguments: [{"x-dead-letter-exchange", :longstr, ""},
-																									{"x-dead-letter-routing-key", :longstr, @queue_error}])
+															{"x-dead-letter-routing-key", :longstr, @queue_error}])
 					Exchange.fanout(chan, @exchange, durable: true)
 					Queue.bind(chan, @queue, @exchange)
 					{:ok, _consumer_tag} = Basic.consume(chan, @queue)
@@ -65,8 +67,9 @@ defmodule Notification.SyncConsumer do
 
   defp consume(channel, tag, redelivered, payload) do
     {:ok, data} = Poison.decode(payload)
-    {"user_id" => user_id} = data
-    room_id = Kernel.inspect(user_id)    
+    %{"user_id" => user_id} = data
+    room_id = Kernel.inspect(user_id)
+    IO.puts "NOtification sync"    
     NotificationWeb.Endpoint.broadcast("notification_room:"<>room_id, "notification:sync", data)
     Basic.ack channel, tag
     IO.inspect payload

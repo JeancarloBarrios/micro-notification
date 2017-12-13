@@ -17,7 +17,7 @@ defmodule Notification.MessageConsumer do
 
     defp rabbitmq_connect do
 			case Connection.open(Application.fetch_env!(:rabbitmq_config, :host)) do
-				{:ok, conn} ->
+        {:ok, conn} ->
 					# Get notifications when the connection goes down
 					Process.monitor(conn.pid)
 					# Everything else remains the same
@@ -32,7 +32,7 @@ defmodule Notification.MessageConsumer do
 					{:ok, _consumer_tag} = Basic.consume(chan, @queue)
 					{:ok, chan}
 				{:error, _} ->
-					# Reconnection loop
+          # Reconnection loop
 					:timer.sleep(10000)
 					rabbitmq_connect
 			end
@@ -65,7 +65,7 @@ defmodule Notification.MessageConsumer do
 
   defp consume(channel, tag, redelivered, payload) do
     {:ok, data} = Poison.decode(payload)
-    {"user_id" => user_id} = data
+    %{"user_id" => user_id} = data
     room_id = Kernel.inspect(user_id)    
     NotificationWeb.Endpoint.broadcast("notification_room:"<>room_id, "notification:msg", data)
     Basic.ack channel, tag
