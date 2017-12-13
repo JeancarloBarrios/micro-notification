@@ -46,4 +46,4 @@ config :notification, Notification.Repo,
   pool_size: 10
 
 config :rabbitmq_config, 
-  host: "amqp://notification:pablo123@localhost:5672/researchSuite"
+  host: "amqp://notification:pablo123@rabit:5672/researchSuite"
